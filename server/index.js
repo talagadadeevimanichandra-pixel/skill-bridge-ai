@@ -34,20 +34,32 @@ app.use((req, res, next) => {
 });
 
 // Configure CORS for local development and deployed frontend domain
-const allowedOrigins = [
-  process.env.CLIENT_URL,
-  'http://localhost:5173',
-  'http://localhost:3000',
-  'http://127.0.0.1:5173',
-].filter(Boolean);
+const getAllowedOrigins = () => {
+  const custom = (process.env.CLIENT_URL || '')
+    .split(',')
+    .map(u => u.trim())
+    .filter(Boolean);
+
+  const origins = new Set([
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://127.0.0.1:5173',
+    ...custom,
+    ...custom.map(u => u.replace(/\/+$/, '')),
+  ]);
+
+  return Array.from(origins);
+};
 
 app.use(cors({
   origin: (origin, callback) => {
+    const allowed = getAllowedOrigins();
+    const cleanOrigin = origin ? origin.replace(/\/+$/, '') : '';
     // Allow non-browser requests or matching origins
-    if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes('*') || process.env.NODE_ENV !== 'production') {
+    if (!origin || allowed.some(a => a.replace(/\/+$/, '') === cleanOrigin) || process.env.NODE_ENV !== 'production') {
       callback(null, true);
     } else {
-      callback(new Error('CORS policy: Access from this origin is restricted.'), false);
+      callback(new Error(`CORS policy: Access from origin '${origin}' is restricted.`), false);
     }
   },
   credentials: true,
