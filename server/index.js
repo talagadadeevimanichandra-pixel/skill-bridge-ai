@@ -69,12 +69,11 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.get('/api/health', (req, res) => {
   const dbStatus = getStatus();
   res.json({
-    status: 'online',
+    status: 'ok',
     platform: 'SkillBridge AI Server',
     version: '1.0.0',
     timestamp: new Date().toISOString(),
-    database: dbStatus.isConnected ? 'MongoDB Connected' : 'In-Memory Demo Engine Active',
-    aiEngine: process.env.GEMINI_API_KEY ? 'Google Gemini 1.5 Active' : 'Resilient AI Engine Active',
+    database: dbStatus.isConnected ? 'connected' : 'active',
   });
 });
 
