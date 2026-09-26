@@ -144,21 +144,19 @@ function calculateProfileCompletion(user) {
   return Math.min(100, Math.max(20, score));
 }
 
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function () {
   this.updatedAt = new Date();
   
   if (this.role === 'jobseeker' && this.profile) {
     this.profile.profileCompletion = calculateProfileCompletion(this);
   }
 
-  if (!this.isModified('passwordHash')) {
-    return next();
+  if (this.isModified('passwordHash')) {
+    if (this.passwordHash && !this.passwordHash.startsWith('$2a$') && !this.passwordHash.startsWith('$2b$')) {
+      const salt = await bcrypt.genSalt(10);
+      this.passwordHash = await bcrypt.hash(this.passwordHash, salt);
+    }
   }
-  if (!this.passwordHash.startsWith('$2a$') && !this.passwordHash.startsWith('$2b$')) {
-    const salt = await bcrypt.genSalt(10);
-    this.passwordHash = await bcrypt.hash(this.passwordHash, salt);
-  }
-  next();
 });
 
 module.exports = mongoose.model('User', userSchema);
