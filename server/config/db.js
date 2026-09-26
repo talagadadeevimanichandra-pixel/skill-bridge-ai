@@ -5,6 +5,10 @@ const Job = require('../models/Job');
 const Application = require('../models/Application');
 const { companies, employers, candidates, jobs, applications } = require('../seed/seedData');
 
+const Skill = require('../models/Skill');
+const rawSkills = require('../seed/skillsData');
+const skillsList = Array.isArray(rawSkills) ? rawSkills : (rawSkills.skillsData || []);
+
 let isConnected = false;
 let isMockMode = false;
 
@@ -48,6 +52,19 @@ const seedInitialDataIfEmpty = async () => {
       }
 
       console.log('[Database] Initial MongoDB Atlas dataset seeded successfully.');
+    }
+
+    const skillCount = await Skill.countDocuments();
+    if (skillCount === 0 && skillsList.length > 0) {
+      console.log('[Database] Seeding skills library into MongoDB...');
+      for (const s of skillsList) {
+        await Skill.findOneAndUpdate(
+          { name: s.name },
+          { $set: s },
+          { upsert: true, new: true, setDefaultsOnInsert: true }
+        );
+      }
+      console.log(`[Database] Seeded ${skillsList.length} skills into MongoDB.`);
     }
   } catch (seedErr) {
     console.warn('[Database] Auto-seeding notice:', seedErr.message);
