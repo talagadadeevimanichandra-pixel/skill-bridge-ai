@@ -1,19 +1,20 @@
 # 🚀 SkillBridge AI - AI-Powered Career & Recruitment Intelligence Platform
 
 > **Your Skills. Your Career. Your Next Opportunity.**  
-> SkillBridge AI connects candidates with high-compatibility jobs, explains match reasoning transparently, diagnoses skill gaps with step-by-step learning roadmaps, and conducts AI mock interviews.
+> SkillBridge AI connects candidates with high-compatibility jobs, explains match reasoning transparently, diagnoses skill gaps with step-by-step learning roadmaps, conducts AI mock interviews, and delivers explainable Resume Intelligence.
 
 ---
 
 ## 🌟 Product Vision & Key Highlights
 
-Traditional employment platforms match candidates based on superficial keyword frequency. **SkillBridge AI** reimagines tech recruitment with:
-- **Transparent AI Compatibility Estimation:** Calculates multi-factor compatibility scores (skills, experience depth, education, and location), explicitly categorizing **Matched**, **Partial / Adjacent**, and **Missing** skills.
-- **Actionable Skill-Gap Roadmaps:** Pinpoints missing skills for any role and automatically synthesizes a 3-step mastery plan, official documentation/courses, and portfolio projects to reach 90%+ match scores.
-- **AI Resume Extraction & ATS Readability:** Extracts structured skills, experience, projects, and certifications from PDF resumes and provides ATS score optimization.
-- **Interactive AI Mock Interview Simulator:** Generates Technical, Behavioral, and System Design rounds for any job post with real-time answer scoring and refined model answers.
-- **AI Job Description Generator:** Enables recruiters to generate high-converting, professional job descriptions in seconds and rank applicants by genuine technical fit without resume fatigue.
-- **AI Career Copilot:** 24/7 conversational mentor answering questions about resume enhancements, high-ROI skills, and portfolio project ideation.
+Traditional employment platforms match candidates based on superficial keyword frequency. **SkillBridge AI** provides an explainable, full-stack recruitment ecosystem:
+- **Transparent AI Compatibility Matching:** Calculates multi-factor compatibility scores (skills, experience depth, education, and location), explicitly categorizing **Matched**, **Partial / Adjacent**, and **Missing** skills.
+- **Explainable Resume Intelligence:** Analyzes uploaded resumes against industry standards, generating a 0–100 Profile Score with a transparent 7-section breakdown, ATS checks, skill evidence extraction, and version history.
+- **Structured Skill Development Library:** Features 12 core tech and career domains with 175+ curated skills, difficulty filters, and interactive progress tracking (`Learning`, `Developing`, `Strong`).
+- **Actionable Skill-Gap Roadmaps:** Pinpoints missing skills for any job listing and synthesizes a step-by-step mastery plan, documentation links, and portfolio project recommendations.
+- **Interactive AI Mock Interview Simulator:** Generates technical, behavioral, and system design rounds with instant answer scoring and model answer feedback.
+- **AI Recruiter Suite:** Enables hiring teams to post vacancies, generate structured job descriptions, and evaluate candidates based on genuine technical compatibility.
+- **Conversational Career Copilot:** 24/7 AI mentor answering career questions, resume optimization tips, and project ideation.
 
 ---
 
@@ -21,57 +22,60 @@ Traditional employment platforms match candidates based on superficial keyword f
 
 | Layer | Technologies |
 |---|---|
-| **Frontend** | React 18, Vite, Tailwind CSS v4, React Router v7, Lucide React, Canvas Confetti, Axios |
+| **Frontend** | React 19, Vite, Tailwind CSS v4, React Router v7, Lucide React, Canvas Confetti, Axios |
 | **Backend** | Node.js, Express.js, Multer, PDF-Parse, JWT, bcryptjs, Morgan, CORS |
-| **Database** | MongoDB Atlas, Mongoose *(with built-in high-performance fallback demo store)* |
-| **AI Engine** | Google Gemini 1.5 Flash API *(with graceful fallback to offline intelligence engine)* |
-| **Deployment** | Netlify (Frontend SPA), Node/Docker compatible (Backend) |
+| **Database** | MongoDB Atlas, Mongoose *(with built-in high-performance fallback store)* |
+| **AI Engine** | Google Gemini API *(with graceful fallback to offline heuristic intelligence)* |
+| **Deployment** | Netlify (Frontend SPA), Render / Railway / Docker (Backend) |
 
 ---
 
-## 📁 Project Folder Structure
+## 📁 Project Structure
 
 ```
-Skill bridge ai/
+skillbridge-ai/
 ├── client/                     # Frontend React SPA
 │   ├── public/
-│   │   └── favicon.svg         # SVG Brand Favicon
+│   │   ├── _redirects          # Netlify SPA redirect rules
+│   │   └── favicon.svg         # Brand Favicon
 │   ├── src/
 │   │   ├── components/         # Navbar, Footer, MatchBadge, SkillGapCard, Modal, StatCard...
-│   │   ├── context/            # AuthContext.jsx (JWT auth, role-switching, demo presets)
+│   │   ├── context/            # AuthContext.jsx (JWT auth, role-switching, session recovery)
 │   │   ├── pages/
-│   │   │   ├── LandingPage.jsx         # Hero, Live Match Simulator, Workflow, Testimonials, FAQ
-│   │   │   ├── LoginPage.jsx           # Sign in + 1-Click Demo Login Presets
+│   │   │   ├── LandingPage.jsx         # Hero, Live Match Simulator, Workflow, FAQ
+│   │   │   ├── LoginPage.jsx           # Sign in + Demo Quick Access
 │   │   │   ├── RegisterPage.jsx        # Role-based registration (Job Seeker / Employer)
-│   │   │   ├── JobSearchPage.jsx       # Search, filter by role/city/salary, sort by AI match
-│   │   │   ├── JobDetailPage.jsx       # Full job specs, compatibility panel, apply modal
-│   │   │   ├── seeker/                 # Seeker Dashboard, Profile, AI Resume, Skill Gap, Interview
-│   │   │   └── employer/               # Employer Dashboard, AI Job Creator, Candidate Ranking
-│   │   ├── services/api.js     # Axios API service client
-│   │   ├── utils/helpers.js    # Currency formatting (INR), date formatting, match colors
+│   │   │   ├── JobSearchPage.jsx       # Search & multi-parameter filtering
+│   │   │   ├── JobDetailPage.jsx       # Job specs, AI compatibility panel, 1-click apply
+│   │   │   ├── seeker/                 # Dashboard, Profile, Resume Intelligence, Skill Gap, Interview
+│   │   │   └── employer/               # Dashboard, Job Creator, Candidate Pipeline
+│   │   ├── services/api.js     # Centralized Axios client with dynamic VITE_API_URL normalization
+│   │   ├── utils/helpers.js    # Formatting utilities
 │   │   ├── App.jsx             # React Router routing & Protected Routes
-│   │   ├── index.css           # Tailwind CSS imports, gradients, glass effects
 │   │   └── main.jsx
-│   ├── index.html
+│   ├── .env.example
 │   ├── package.json
 │   └── vite.config.js
 │
 ├── server/                     # Backend Express REST API
-│   ├── config/db.js            # MongoDB Atlas connection & fallback handler
-│   ├── controllers/            # Auth, Job, Application, Resume, Company, AI controllers
-│   ├── middleware/             # JWT auth & Multer PDF upload middleware
-│   ├── models/                 # User, Job, Company, Resume, Application, InterviewSession
+│   ├── config/db.js            # MongoDB Atlas connection & auto-seed handler
+│   ├── controllers/            # Auth, Job, Application, Resume, Company, Skill, AI controllers
+│   ├── middleware/             # JWT auth, RBAC, Rate limiter, Multer PDF upload
+│   ├── models/                 # User, Job, Company, Resume, Application, Skill, InterviewSession
 │   ├── routes/                 # Express REST endpoints
-│   ├── seed/                   # Realistic seed data (10+ jobs, 5+ companies, 8+ candidates)
+│   ├── seed/                   # 24+ jobs, 8+ companies, 175+ skills, realistic Indian candidates
 │   ├── services/
-│   │   ├── aiService.js        # Google Gemini 1.5 integration + resilient fallback generators
+│   │   ├── aiService.js        # Gemini AI integration + fallback generators
 │   │   ├── matchingService.js  # Multi-factor AI compatibility algorithm
+│   │   ├── resumeIntelligenceService.js # Resume parsing & transparent scoring
 │   │   └── inMemoryStore.js    # Resilient demo persistence store
+│   ├── .env.example
 │   ├── index.js                # Express app entry point
-│   ├── package.json
-│   └── .env.example
+│   └── package.json
 │
-├── netlify.toml                # Netlify SPA redirect & build config
+├── .env.example                # Root environment template
+├── .gitignore                  # Comprehensive gitignore rules
+├── netlify.toml                # Netlify SPA configuration
 ├── package.json                # Root orchestration scripts
 └── README.md
 ```
@@ -80,64 +84,49 @@ Skill bridge ai/
 
 ## ⚡ Quick Start (Local Setup)
 
-### 1. Clone & Install Dependencies
-
-In the project root directory, run:
+### 1. Install Dependencies
 ```bash
-# Install root, backend and frontend dependencies
+# From root directory
 npm run install:all
 ```
 
-Alternatively, install individually:
+Or install separately:
 ```bash
-# Backend dependencies
-cd server
-npm install
-
-# Frontend dependencies
-cd ../client
-npm install
+cd server && npm install
+cd ../client && npm install
 ```
 
 ---
 
 ### 2. Environment Configuration
 
-Create a `.env` file in the `server/` directory:
+Copy `.env.example` in `server/`:
 ```env
 PORT=5000
 MONGODB_URI=mongodb://localhost:27017/skillbridge_ai
-JWT_SECRET=skillbridge_super_secret_jwt_key_2026_production
+JWT_SECRET=your_jwt_secret_key_here
 GEMINI_API_KEY=your_gemini_api_key_here
 CLIENT_URL=http://localhost:5173
 NODE_ENV=development
 ```
 
-> **Note on AI & Database Fallbacks:**  
-> If `GEMINI_API_KEY` is not provided or Gemini is unreachable, SkillBridge AI **gracefully falls back to high-yield built-in AI generators**. If MongoDB is offline, it seamlessly activates the **in-memory demo store**, ensuring a **100% functional hackathon presentation**.
-
----
-
-### 3. Seed Realistic Indian Tech Data (Optional)
-
-To seed 10+ jobs, 5+ companies, and 8+ candidates into MongoDB:
-```bash
-cd server
-npm run seed
+In `client/` (optional for local dev with Vite proxy):
+```env
+VITE_API_URL=/api
 ```
 
 ---
 
-### 4. Run the Application
+### 3. Run Application
 
-**Start the Backend Server:**
+**Start Backend Server:**
 ```bash
 cd server
 npm start
 # Server runs on http://localhost:5000
 ```
 
-**Start the Frontend Client:**
+**Start Frontend Client:**
 ```bash
 cd client
 npm run dev
@@ -146,49 +135,43 @@ npm run dev
 
 ---
 
-## 👤 Instant Demo Credentials (Hackathon Testing)
+## 👤 Instant Demo Credentials
 
-You can use the **1-Click Demo Switcher** in the top navigation bar or log in manually with:
+Use the **Test with Demo Accounts** quick buttons on the Login page or sign in manually:
 
-| Role | Demo Email | Password | Preloaded Profile Highlights |
+| Role | Demo Email | Password | Profile Highlights |
 |---|---|---|---|
-| **Job Seeker** | `aarav@skillbridge.demo` | `password123` | Aarav Sharma (MERN Stack, VIT graduate, Bengaluru) |
-| **Employer** | `recruiter@nextgen.demo` | `password123` | Priya Nambiar (Recruiter @ NextGen Dynamics) |
-| **AI/ML Candidate** | `ananya.reddy@skillbridge.demo` | `password123` | Ananya Reddy (PyTorch, RAG Pipelines, Hyderabad) |
+| **Candidate** | `aarav@skillbridge.demo` | `password123` | Aarav Sharma (Full Stack Developer, Bengaluru) |
+| **Recruiter** | `recruiter@technova.demo` | `password123` | Priya Nambiar (Technical Recruiter @ TechNova Solutions) |
+| **Data/ML Candidate** | `ananya.reddy@skillbridge.demo` | `password123` | Ananya Reddy (ML Engineer, Hyderabad) |
 
 ---
 
-## 🌐 Netlify Deployment Instructions
+## 🌐 Production Deployment
 
-1. Connect your GitHub repository to **Netlify**.
-2. Set the build settings:
-   - **Base directory:** `client`
-   - **Build command:** `npm run build`
-   - **Publish directory:** `dist`
-3. In Netlify **Environment Variables**, set:
-   - `VITE_API_URL` = URL of your deployed Node.js backend (e.g. `https://skillbridge-api.onrender.com/api`)
-4. Deploy site! `netlify.toml` will handle single-page application routing automatically.
+### Backend (Render / Railway)
+- **Root Directory:** `server`
+- **Build Command:** `npm install`
+- **Start Command:** `node index.js` (or `npm start`)
+- **Environment Variables:**
+  - `MONGODB_URI` = MongoDB Atlas connection string
+  - `JWT_SECRET` = Strong random 256-bit string
+  - `CLIENT_URL` = Netlify frontend URL (e.g. `https://your-site.netlify.app`)
+  - `GEMINI_API_KEY` = *(Optional)* Google Gemini API Key
 
----
-
-## 🔒 Security Best Practices Implemented
-
-- ✅ **Zero Secrets on Frontend:** Gemini API keys and JWT secrets are strictly managed on the backend.
-- ✅ **Bcrypt Password Hashing:** 10-round salt hashing for all passwords.
-- ✅ **Stateless JWT Authentication:** 30-day token lifetime with header bearer authentication.
-- ✅ **Role-Based Access Control (RBAC):** Strict separation between Job Seeker and Employer endpoints.
-- ✅ **Sanitized AI Parsing:** Automated markdown sanitization and structured JSON schema validation.
-- ✅ **Fairness & Bias Prevention:** Sensitive demographic attributes are never used in candidate scoring.
+### Frontend (Netlify)
+- **Base directory:** `client`
+- **Build command:** `npm run build`
+- **Publish directory:** `dist`
+- **Environment Variables:**
+  - `VITE_API_URL` = Your deployed backend URL (e.g. `https://your-backend.onrender.com`)
 
 ---
 
-## 🏆 Hackathon Evaluation Checklist
+## 🔒 Security & Privacy Practices
 
-- [x] Full-stack architecture with React + Vite frontend and Node.js + Express backend.
-- [x] AI Compatibility Matching score with matched, partial, and missing skills breakdown.
-- [x] PDF Resume upload and AI extraction (Skills, Education, Experience, Projects, ATS score).
-- [x] Skill-gap analysis with step-by-step mastery paths and suggested portfolio projects.
-- [x] AI Interview simulator with technical/behavioral rounds and live answer grading.
-- [x] Recruiter hub with AI Job Description generator and candidate match ranking.
-- [x] Realistic Indian tech market demo data across Bengaluru, Hyderabad, Chennai, Pune, Visakhapatnam, Vijayawada, Mumbai, and Delhi.
-- [x] Tested production build with 0 compiler or console errors.
+- 🛡️ **Strict Secret Isolation:** Database URIs, JWT secrets, and AI keys remain server-side.
+- 🔑 **Bcrypt Password Encryption:** 10-round salted password hashing.
+- 🛡️ **Role-Based Access Control:** Strict RBAC separating candidate and employer access.
+- 🌐 **Protected CORS:** Normalized origin validation preventing unauthorized cross-origin calls.
+- 🧹 **Error Sanitization:** Zero database traces or stack leaks returned in production API responses.
