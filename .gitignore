@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
+server/.env
+server/.env.*
+!server/.env.example
+client/.env
+client/.env.*
+!client/.env.example
+
+# Build & Test outputs
+dist/
+client/dist/
+build/
+coverage/
+
+# Uploaded candidate files
+server/uploads/
+uploads/
+
+# Logs & temp
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+Thumbs.db

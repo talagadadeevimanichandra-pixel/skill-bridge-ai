@@ -1,0 +1,12 @@
+{
+  "name": "skillbridge-ai",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install",
+    "client": "cd client && npm run dev",
+    "server": "cd server && npm start",
+    "seed": "cd server && npm run seed",
+    "build": "cd client && npm run build"
+  }
+}
