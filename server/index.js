@@ -55,8 +55,9 @@ app.use(cors({
   origin: (origin, callback) => {
     const allowed = getAllowedOrigins();
     const cleanOrigin = origin ? origin.replace(/\/+$/, '') : '';
-    // Allow non-browser requests or matching origins
-    if (!origin || allowed.some(a => a.replace(/\/+$/, '') === cleanOrigin) || process.env.NODE_ENV !== 'production') {
+    const isVercelDomain = cleanOrigin.endsWith('.vercel.app');
+    // Allow non-browser requests, Vercel deployments, or matching origins
+    if (!origin || isVercelDomain || allowed.some(a => a.replace(/\/+$/, '') === cleanOrigin) || process.env.NODE_ENV !== 'production') {
       callback(null, true);
     } else {
       callback(new Error(`CORS policy: Access from origin '${origin}' is restricted.`), false);

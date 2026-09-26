@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/index.js"
+      "destination": "https://server-tau-five-19.vercel.app/api/$1"
     },
     {
       "source": "/(.*)",
