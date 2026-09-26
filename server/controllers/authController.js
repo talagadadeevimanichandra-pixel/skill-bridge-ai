@@ -170,7 +170,12 @@ const login = async (req, res) => {
     let user = null;
 
     if (isConnected) {
-      user = await User.findOne({ email: cleanEmail });
+      try {
+        user = await User.findOne({ email: cleanEmail });
+      } catch (dbErr) {
+        console.warn('[Login DB fallback]:', dbErr.message);
+        user = inMemoryStore.findUserByEmail(cleanEmail);
+      }
     } else {
       user = inMemoryStore.findUserByEmail(cleanEmail);
     }

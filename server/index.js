@@ -18,6 +18,8 @@ const skillRoutes = require('./routes/skillRoutes');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+app.set('trust proxy', 1);
+
 // Connect to Database (with in-memory fallback if MongoDB is not running)
 connectDB();
 
