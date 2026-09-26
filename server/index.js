@@ -77,6 +77,23 @@ const { authLimiter, aiLimiter, generalLimiter } = require('./middleware/rateLim
 // Static files for uploaded resumes (Protected & non-executable)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Root and Health Check Endpoints
+app.get('/', (req, res) => {
+  res.json({
+    status: 'ok',
+    message: 'SkillBridge AI Backend API Server is Live & Healthy',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      jobs: '/api/jobs',
+      skills: '/api/skills',
+      resume: '/api/resume',
+      ai: '/api/ai'
+    }
+  });
+});
+
 // API Health Check
 app.get('/api/health', (req, res) => {
   const dbStatus = getStatus();

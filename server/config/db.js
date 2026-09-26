@@ -72,6 +72,10 @@ const seedInitialDataIfEmpty = async () => {
 };
 
 const connectDB = async () => {
+  if (mongoose.connection.readyState === 1) {
+    isConnected = true;
+    return true;
+  }
   const rawUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/skillbridge_ai';
   // Redact credentials for secure logging
   const sanitizedUri = rawUri.replace(/\/\/(.*?):(.*?)@/, '//***:***@');
