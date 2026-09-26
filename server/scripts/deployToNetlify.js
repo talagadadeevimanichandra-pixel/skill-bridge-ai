@@ -3,6 +3,7 @@ const path = require('path');
 const https = require('https');
 
 const NETLIFY_TOKEN = process.env.NETLIFY_AUTH_TOKEN || '';
+const SITE_ID = process.env.NETLIFY_SITE_ID || 'd0467faf-45c2-484b-85aa-e12d8ded7874';
 const ZIP_PATH = path.join(process.cwd(), 'dist.zip');
 
 function request(options, body = null) {
@@ -38,43 +39,47 @@ async function deploy() {
   const zipBuffer = fs.readFileSync(ZIP_PATH);
   console.log(`📦 Loaded dist.zip (${(zipBuffer.length / 1024).toFixed(1)} KB)`);
 
-  // 1. Check existing sites
-  console.log('🔍 Checking Netlify sites...');
-  const sitesRes = await request({
-    hostname: 'api.netlify.com',
-    path: '/api/v1/sites',
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${NETLIFY_TOKEN}`,
-      'User-Agent': 'SkillBridge-Deployer'
-    }
-  });
-
   let site = null;
-  if (Array.isArray(sitesRes.data)) {
-    site = sitesRes.data.find(s => s.name.includes('skillbridge-ai') || s.custom_domain?.includes('skillbridge'));
-  }
-
-  // 2. Create site if needed
-  if (!site) {
-    const siteName = `skillbridge-ai-${Math.random().toString(36).substring(2, 7)}`;
-    console.log(`✨ Creating new Netlify site: ${siteName}...`);
-    const createRes = await request({
+  if (SITE_ID) {
+    site = { id: SITE_ID, name: 'skillbridge-ai-5zfkk', url: 'https://skillbridge-ai-5zfkk.netlify.app' };
+  } else {
+    // 1. Check existing sites
+    console.log('🔍 Checking Netlify sites...');
+    const sitesRes = await request({
       hostname: 'api.netlify.com',
       path: '/api/v1/sites',
-      method: 'POST',
+      method: 'GET',
       headers: {
         'Authorization': `Bearer ${NETLIFY_TOKEN}`,
-        'Content-Type': 'application/json',
         'User-Agent': 'SkillBridge-Deployer'
       }
-    }, JSON.stringify({ name: siteName }));
+    });
 
-    if (createRes.status !== 200 && createRes.status !== 201) {
-      console.error('Failed to create site:', createRes);
-      throw new Error(`Site creation failed with status ${createRes.status}`);
+    if (Array.isArray(sitesRes.data)) {
+      site = sitesRes.data.find(s => s.name.includes('skillbridge-ai') || s.custom_domain?.includes('skillbridge'));
     }
-    site = createRes.data;
+
+    // 2. Create site if needed
+    if (!site) {
+      const siteName = `skillbridge-ai-${Math.random().toString(36).substring(2, 7)}`;
+      console.log(`✨ Creating new Netlify site: ${siteName}...`);
+      const createRes = await request({
+        hostname: 'api.netlify.com',
+        path: '/api/v1/sites',
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${NETLIFY_TOKEN}`,
+          'Content-Type': 'application/json',
+          'User-Agent': 'SkillBridge-Deployer'
+        }
+      }, JSON.stringify({ name: siteName }));
+
+      if (createRes.status !== 200 && createRes.status !== 201) {
+        console.error('Failed to create site:', createRes);
+        throw new Error(`Site creation failed with status ${createRes.status}`);
+      }
+      site = createRes.data;
+    }
   }
 
   console.log(`🎯 Target Site: ${site.name} (ID: ${site.id})`);

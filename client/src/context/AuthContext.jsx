@@ -5,10 +5,24 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('skillbridge_user');
-    return saved ? JSON.parse(saved) : null;
+    try {
+      const saved = localStorage.getItem('skillbridge_user');
+      if (!saved || saved === 'undefined' || saved === 'null') return null;
+      return JSON.parse(saved);
+    } catch (e) {
+      try { localStorage.removeItem('skillbridge_user'); } catch (_) {}
+      return null;
+    }
   });
-  const [token, setToken] = useState(() => localStorage.getItem('skillbridge_token') || null);
+  const [token, setToken] = useState(() => {
+    try {
+      const saved = localStorage.getItem('skillbridge_token');
+      if (!saved || saved === 'undefined' || saved === 'null') return null;
+      return saved;
+    } catch (e) {
+      return null;
+    }
+  });
   const [loading, setLoading] = useState(true);
 
   const [sessionExpiredMessage, setSessionExpiredMessage] = useState('');

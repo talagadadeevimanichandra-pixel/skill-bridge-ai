@@ -6,6 +6,7 @@ import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Route Loading Spinner
 const RouteLoader = () => (
@@ -48,13 +49,14 @@ const CompanyProfilePage = lazy(() => import('./pages/employer/CompanyProfilePag
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <div className="flex flex-col min-h-screen">
-          <Navbar />
-          
-          <main className="flex-1">
-            <Suspense fallback={<RouteLoader />}>
+    <ErrorBoundary>
+      <AuthProvider>
+        <Router>
+          <div className="flex flex-col min-h-screen">
+            <Navbar />
+            
+            <main className="flex-1">
+              <Suspense fallback={<RouteLoader />}>
               <Routes>
               {/* Public Routes */}
               <Route path="/" element={<LandingPage />} />
@@ -185,6 +187,7 @@ function App() {
         </div>
       </Router>
     </AuthProvider>
+    </ErrorBoundary>
   );
 }
 
