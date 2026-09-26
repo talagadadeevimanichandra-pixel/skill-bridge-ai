@@ -54,34 +54,54 @@ const register = async (req, res) => {
     let newCompany = null;
 
     if (isConnected) {
-      newUser = await User.create({
+      try {
+        newUser = await User.create({
+          name: name.trim(),
+          email: cleanEmail,
+          passwordHash,
+          role: assignedRole,
+          profile: {
+            location: location || 'Bengaluru, India',
+            skills: Array.isArray(skills) ? skills : (skills ? skills.split(',').map(s => s.trim()) : []),
+          }
+        });
+
+        if (role === 'employer') {
+          newCompany = await Company.create({
+            employerId: newUser._id,
+            companyName: companyName || `${name}'s Organization`,
+            location: location || 'Bengaluru, India',
+            description: `Leading software and technology services at ${companyName || name}.`,
+          });
+          newUser.companyId = newCompany._id;
+          await newUser.save();
+        }
+      } catch (dbErr) {
+        if (dbErr.code === 11000) {
+          return res.status(400).json({ success: false, message: 'An account with this email address already exists.' });
+        }
+        if (dbErr.name === 'ValidationError') {
+          return res.status(400).json({ success: false, message: dbErr.message });
+        }
+        // Fallback to high-performance store if DB is momentarily unreachable
+        console.warn('[Register DB fallback]:', dbErr.message);
+        newUser = inMemoryStore.addUser({
+          name: name.trim(),
+          email: cleanEmail,
+          passwordHash,
+          role: assignedRole,
+          profile: {
+            location: location || 'Bengaluru, India',
+            skills: Array.isArray(skills) ? skills : (skills ? skills.split(',').map(s => s.trim()) : []),
+          }
+        });
+      }
+    } else {
+      newUser = inMemoryStore.addUser({
         name: name.trim(),
         email: cleanEmail,
         passwordHash,
         role: assignedRole,
-        profile: {
-          location: location || 'Bengaluru, India',
-          skills: Array.isArray(skills) ? skills : (skills ? skills.split(',').map(s => s.trim()) : []),
-        }
-      });
-
-
-      if (role === 'employer') {
-        newCompany = await Company.create({
-          employerId: newUser._id,
-          companyName: companyName || `${name}'s Organization`,
-          location: location || 'Bengaluru, India',
-          description: `Leading software and technology services at ${companyName || name}.`,
-        });
-        newUser.companyId = newCompany._id;
-        await newUser.save();
-      }
-    } else {
-      newUser = inMemoryStore.addUser({
-        name,
-        email: email.toLowerCase(),
-        passwordHash,
-        role: role === 'employer' ? 'employer' : 'jobseeker',
         profile: {
           location: location || 'Bengaluru, India',
           skills: Array.isArray(skills) ? skills : (skills ? skills.split(',').map(s => s.trim()) : []),
@@ -121,8 +141,11 @@ const register = async (req, res) => {
       }
     });
   } catch (error) {
+    if (error.code === 11000) {
+      return res.status(400).json({ success: false, message: 'An account with this email address already exists.' });
+    }
     console.error('Register error:', error);
-    return res.status(500).json({ success: false, message: 'Registration could not be completed.', error: error.message });
+    return res.status(400).json({ success: false, message: error.message || 'Registration could not be completed.' });
   }
 };
 
