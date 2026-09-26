@@ -46,6 +46,8 @@ API.interceptors.response.use(
           }
         }));
       }
+    } else if (error.response?.status === 405) {
+      error.message = 'Unable to reach backend API. The request was routed to static frontend hosting. Please configure VITE_API_URL in your deployment environment.';
     }
     return Promise.reject(error);
   }
